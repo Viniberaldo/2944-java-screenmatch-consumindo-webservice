@@ -22,21 +22,34 @@ public class PrincipalComBusca {
         Scanner leitura = new Scanner(System.in);
         System.out.println("Digita um filme para busca: ");
         String busca = leitura.nextLine();
-        String uri = "http://omdbapi.com/?t=" + busca + "&apikey=5bc598db";
+        try {
+            String uri = "http://omdbapi.com/?t=" + busca + "&apikey=5bc598db";
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().
-                uri(URI.create(uri)).build();
-        HttpResponse<String> response = client.
-                send(request, HttpResponse.BodyHandlers.ofString());
-        String json = response.body();
-        System.out.println(json);
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder().
+                    uri(URI.create(uri)).build();
+            HttpResponse<String> response = client.
+                    send(request, HttpResponse.BodyHandlers.ofString());
+            String json = response.body();
+            System.out.println(json);
 
-        Gson gson = new GsonBuilder().setFieldNamingPolicy(
-                FieldNamingPolicy.UPPER_CAMEL_CASE).create();
-        //Titulo meuTitulo = gson.fromJson(json, Titulo.class);
-        TituloOmdb meuTituloOmdb = gson.fromJson(json, TituloOmdb.class);
-        Titulo meuTitulo = new Titulo(meuTituloOmdb);
-        System.out.println(meuTitulo);
+            Gson gson = new GsonBuilder().setFieldNamingPolicy(
+                    FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+            //Titulo meuTitulo = gson.fromJson(json, Titulo.class);
+            TituloOmdb meuTituloOmdb = gson.fromJson(json, TituloOmdb.class);
+
+            Titulo meuTitulo = null;
+            //try {
+            meuTitulo = new Titulo(meuTituloOmdb);
+            System.out.println("Titulo convertido");
+            System.out.println(meuTitulo);
+        } catch (NumberFormatException e) {
+            System.out.println("Aconteceu um erro: ");
+            System.out.println(e.getMessage());
+        } catch (IllegalArgumentException iae) {
+            System.out.println("Erro de argumento na busca, verifique o endereço");
+        }
+
+        System.out.println("O programa finalizou corretamento");
     }
 }
